@@ -70,6 +70,9 @@ def ensure_environment(env_dir):
 @click.option('--log', type=click.Path(dir_okay=False), default=DEFAULT_LOG)
 def cli(log):
     setup_logging(log)
+
+    # TODO: adapt factories for new BeamNG.research version;
+    # consider the tool-competition framework
     generate_factories()
 
 
@@ -107,7 +110,10 @@ def bng(seed, generations, render, show, time_limit):
     # Force the use of BeamNG.AI
     config.ex.ai_controlled = 'true'
 
+    # TODO: we should use the tool-competition framework as a runner
     factory = gen_beamng_runner_factory(config.ex.get_level_dir(), config.ex.host, config.ex.port, plot=show)
+
+    # TODO: we need to consider the projection to (x,y) coordinates for the tool-competition framework
     experiments.experiment(seed, generations, factory, render=render, show=show, time_limit=time_limit)
 
 
@@ -166,6 +172,9 @@ def mock(seed, generations, show, render):
         l.info("(Mock) REPAIR: Disabled")
 
     step = 0
+
+
+    # generate test suite
     for state in gen.evolve_suite(generations):
         if plotter:
             updated = plotter.update(state)
@@ -178,6 +187,7 @@ def mock(seed, generations, show, render):
                     save_plot(out_file, dpi=c.pt.dpi_intermediate)
                     step += 1
 
+    # get the test suite to a local variable
     suite = gen.population
 
     for test in suite:
@@ -411,3 +421,4 @@ def process_results(exp_dir):
 
 if __name__ == '__main__':
     cli()
+
